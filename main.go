@@ -51,13 +51,13 @@ func main() {
 	_, err = fmt.Println(weather)
 }
 
-type conds struct{
+type conds struct {
 	Current current `json:"current_observation"`
 }
 
-type current struct{
-	Weather string `json:"weather"`
-	TempF float64 `json:"temp_f"`
-	TempC float64 `json:"temp_c"`
-	Humidity string `json:"relative_humidity"`
+type current struct {
+	Weather  string  `json:"weather"`
+	TempF    float64 `json:"temp_f"`
+	TempC    float64 `json:"temp_c"`
+	Humidity string  `json:"relative_humidity"`
 }
