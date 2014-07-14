@@ -71,6 +71,7 @@ const (
 
 type clothing struct {
 	name string
+	top bool
 	layer
 }
 
@@ -79,19 +80,18 @@ func (c clothing) String() string {
 }
 
 var (
-	shirt          = clothing{"shirt", Primary}
-	tshirt         = clothing{"t-shirt", Primary | Secondary}
-	longundershirt = clothing{"long undershirt", Secondary}
-	hoodie         = clothing{"hoodie", Secondary}
-	jacket         = clothing{"jacket", Secondary}
-	coat           = clothing{"coat", Secondary}
-	trousers       = clothing{"trousers", Primary}
-	shorts         = clothing{"shorts", Primary}
-	leggings       = clothing{"leggings", Secondary}
+	shirt          = clothing{"shirt", true, Primary}
+	tshirt         = clothing{"t-shirt", true, Primary | Secondary}
+	longundershirt = clothing{"long undershirt", true, Secondary}
+	hoodie         = clothing{"hoodie", true, Secondary}
+	jacket         = clothing{"jacket", true, Secondary}
+	coat           = clothing{"coat", true, Secondary}
+	trousers       = clothing{"trousers", false, Primary}
+	shorts         = clothing{"shorts", false, Primary}
+	leggings       = clothing{"leggings", false, Secondary}
 )
 
-// TODO(mccoyst): Don't hard-code this.
-func clothes(t float64) [][]clothing {
+func possibilities(t float64) []clothing {
 	var c []clothing
 	if t < 30 {
 		c = append(c, longundershirt, leggings)
@@ -117,5 +117,9 @@ func clothes(t float64) [][]clothing {
 		c = append(c, trousers)
 	}
 
-	return [][]clothing{c}
+	return c
+}
+
+func clothes(t float64) [][]clothing {
+	return [][]clothing{possibilities(t)}
 }
