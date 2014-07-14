@@ -90,7 +90,7 @@ var (
 )
 
 // TODO(mccoyst): Don't hard-code this.
-func clothes(t float64) []clothing {
+func clothes(t float64) [][]clothing {
 	var c []clothing
 	if t < 30 {
 		c = append(c, longundershirt, leggings)
@@ -116,5 +116,5 @@ func clothes(t float64) []clothing {
 		c = append(c, trousers)
 	}
 
-	return c
+	return [][]clothing{c}
 }
