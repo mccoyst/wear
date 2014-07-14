@@ -63,12 +63,13 @@ type current struct {
 }
 
 type layer int
+
 const (
-	Primary layer = 1 + iota
-	Secondary = iota << 1
+	Primary   layer = 1 + iota
+	Secondary       = iota << 1
 )
 
-type clothing struct{
+type clothing struct {
 	name string
 	layer
 }
@@ -78,15 +79,15 @@ func (c clothing) String() string {
 }
 
 var (
-	shirt = clothing{"shirt", Primary}
-	tshirt = clothing{"t-shirt", Primary|Secondary}
+	shirt          = clothing{"shirt", Primary}
+	tshirt         = clothing{"t-shirt", Primary | Secondary}
 	longundershirt = clothing{"long undershirt", Secondary}
-	hoodie = clothing{"hoodie", Secondary}
-	jacket = clothing{"jacket", Secondary}
-	coat = clothing{"coat", Secondary}
-	trousers = clothing{"trousers", Primary}
-	shorts = clothing{"shorts", Primary}
-	leggings = clothing{"leggings", Secondary}
+	hoodie         = clothing{"hoodie", Secondary}
+	jacket         = clothing{"jacket", Secondary}
+	coat           = clothing{"coat", Secondary}
+	trousers       = clothing{"trousers", Primary}
+	shorts         = clothing{"shorts", Primary}
+	leggings       = clothing{"leggings", Secondary}
 )
 
 // TODO(mccoyst): Don't hard-code this.
