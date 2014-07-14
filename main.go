@@ -61,3 +61,60 @@ type current struct {
 	TempC    float64 `json:"temp_c"`
 	Humidity string  `json:"relative_humidity"`
 }
+
+type layer int
+const (
+	Primary layer = 1 + iota
+	Secondary = iota << 1
+)
+
+type clothing struct{
+	name string
+	layer
+}
+
+func (c clothing) String() string {
+	return c.name
+}
+
+var (
+	shirt = clothing{"shirt", Primary}
+	tshirt = clothing{"t-shirt", Primary|Secondary}
+	longundershirt = clothing{"long undershirt", Secondary}
+	hoodie = clothing{"hoodie", Secondary}
+	jacket = clothing{"jacket", Secondary}
+	coat = clothing{"coat", Secondary}
+	trousers = clothing{"trousers", Primary}
+	shorts = clothing{"shorts", Primary}
+	leggings = clothing{"leggings", Secondary}
+)
+
+// TODO(mccoyst): Don't hard-code this.
+func clothes(t float64) []clothing {
+	var c []clothing
+	if t < 30 {
+		c = append(c, longundershirt, leggings)
+	}
+	if t < 40 {
+		c = append(c, coat)
+	}
+	if t < 50 {
+		c = append(c, hoodie)
+	}
+	if t < 60 {
+		c = append(c, jacket)
+	}
+	if t < 70 {
+		c = append(c, shirt)
+	}
+	if t >= 70 {
+		c = append(c, tshirt)
+	}
+	if t >= 85 {
+		c = append(c, shorts)
+	} else {
+		c = append(c, trousers)
+	}
+
+	return c
+}
