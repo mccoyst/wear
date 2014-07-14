@@ -67,11 +67,11 @@ type layer int
 const (
 	Primary   layer = 1 + iota
 	Secondary       = iota << 1
+	Top = iota << 1
 )
 
 type clothing struct {
 	name string
-	top bool
 	layer
 }
 
@@ -80,15 +80,15 @@ func (c clothing) String() string {
 }
 
 var (
-	shirt          = clothing{"shirt", true, Primary}
-	tshirt         = clothing{"t-shirt", true, Primary | Secondary}
-	longundershirt = clothing{"long undershirt", true, Secondary}
-	hoodie         = clothing{"hoodie", true, Secondary}
-	jacket         = clothing{"jacket", true, Secondary}
-	coat           = clothing{"coat", true, Secondary}
-	trousers       = clothing{"trousers", false, Primary}
-	shorts         = clothing{"shorts", false, Primary}
-	leggings       = clothing{"leggings", false, Secondary}
+	shirt          = clothing{"shirt", Primary|Top}
+	tshirt         = clothing{"t-shirt", Primary | Secondary|Top}
+	longundershirt = clothing{"long undershirt", Secondary|Top}
+	hoodie         = clothing{"hoodie", Secondary|Top}
+	jacket         = clothing{"jacket", Secondary|Top}
+	coat           = clothing{"coat", Secondary|Top}
+	trousers       = clothing{"trousers", Primary}
+	shorts         = clothing{"shorts", Primary}
+	leggings       = clothing{"leggings", Secondary}
 )
 
 func possibilities(t float64) []clothing {
