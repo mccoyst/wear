@@ -66,14 +66,6 @@ type current struct {
 	Humidity string  `json:"relative_humidity"`
 }
 
-type layer int
-
-const (
-	Primary   layer = 1 + iota
-	Secondary       = iota << 1
-	Top             = iota << 1
-)
-
 type clothing struct {
 	name  string
 	score int
