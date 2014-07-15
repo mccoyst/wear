@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"math"
-	"math/rand"
 	"net/http"
 	"os"
 	"os/user"
@@ -86,21 +85,9 @@ func (c clothing) String() string {
 
 type clothes []clothing
 
-func (c clothes) Len() int {
-	return len(c)
-}
-
-func (c clothes) Less(i, j int) bool {
-	return c[i].name < c[j].name
-}
-
-func (c clothes) Swap(i, j int) {
-	c[i], c[j] = c[j], c[i]
-}
-
-func (c clothes) Rand() clothing {
-	return c[rand.Intn(len(c))]
-}
+func (c clothes) Len() int { return len(c) }
+func (c clothes) Less(i, j int) bool { return c[i].name < c[j].name }
+func (c clothes) Swap(i, j int) { c[i], c[j] = c[j], c[i] }
 
 var primaryTops = clothes{
 	clothing{"shirt", 10},
@@ -124,8 +111,8 @@ var secondaryBottoms = clothes{
 	clothing{"leggings", 10},
 }
 
-func wear(t float64) [][]clothing {
-	var combos [][]clothing
+func wear(t float64) []clothes {
+	var combos []clothes
 
 	tier := int(math.Ceil(t))
 	goal := 35 - tier
@@ -142,7 +129,7 @@ func wear(t float64) [][]clothing {
 		fmt.Fprintln(os.Stderr, "-------------------------")
 		for {
 			score := top0.score
-			tops := make([]clothing, 0, len(secondaryTops)+1)
+			tops := make(clothes, 0, len(secondaryTops)+1)
 			tops = append(tops, top0)
 			for _, c := range secondaryTops {
 				if c.score+score > goal {
