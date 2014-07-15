@@ -102,6 +102,8 @@ var secondaryTops = clothes{
 	clothing{"coat", 10},
 }
 
+type outfit [6]clothing
+
 var primaryBottoms = clothes{
 	clothing{"trousers", 10},
 	clothing{"shorts", 5},
@@ -111,8 +113,8 @@ var secondaryBottoms = clothes{
 	clothing{"leggings", 10},
 }
 
-func wear(t float64) []clothes {
-	var combos []clothes
+func wear(t float64) map[outfit]bool {
+	combos := map[outfit]bool{}
 
 	tier := int(math.Ceil(t))
 	goal := 35 - tier
@@ -123,10 +125,7 @@ func wear(t float64) []clothes {
 	sort.Sort(primaryBottoms)
 	sort.Sort(secondaryBottoms)
 
-	//	bot0 := primaryBottoms.Rand()
-	fmt.Fprintln(os.Stderr, "primary tops =", len(primaryTops))
 	for _, top0 := range primaryTops {
-		fmt.Fprintln(os.Stderr, "-------------------------")
 		for {
 			score := top0.score
 			tops := make(clothes, 0, len(secondaryTops)+1)
@@ -139,8 +138,13 @@ func wear(t float64) []clothes {
 				score += c.score
 			}
 
-			fmt.Fprintln(os.Stderr, tops)
-			combos = append(combos, tops)
+			sort.Sort(tops)
+			var ta outfit
+			copy(ta[:], tops)
+			if !combos[ta] {
+				fmt.Fprintln(os.Stderr, tops)
+				combos[ta] = true
+			}
 
 			if !permute.Next(secondaryTops) {
 				break
