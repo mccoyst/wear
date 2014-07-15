@@ -13,6 +13,8 @@ import (
 	"os"
 	"os/user"
 	"sort"
+
+	"github.com/mccoyst/permute"
 )
 
 func main() {
@@ -139,31 +141,6 @@ func wear(t float64) [][]clothing {
 	for _, top0 := range primaryTops {
 		fmt.Fprintln(os.Stderr, "-------------------------")
 		for {
-			k := len(secondaryTops) - 2
-			for ; k >= 0; k-- {
-				if secondaryTops[k].name < secondaryTops[k+1].name {
-					break
-				}
-			}
-
-			if k < 0 || secondaryTops[k].name >= secondaryTops[k+1].name {
-				break
-			}
-
-			i := len(secondaryTops) - 1
-			for ; i > k; i-- {
-				if secondaryTops[k].name < secondaryTops[i].name {
-					break
-				}
-			}
-
-			if i == k {
-				break
-			}
-
-			secondaryTops.Swap(k, i)
-			sort.Sort(sort.Reverse(secondaryTops[k+1:]))
-
 			score := top0.score
 			tops := make([]clothing, 0, len(secondaryTops)+1)
 			tops = append(tops, top0)
@@ -177,6 +154,10 @@ func wear(t float64) [][]clothing {
 
 			fmt.Fprintln(os.Stderr, tops)
 			combos = append(combos, tops)
+
+			if !permute.Next(secondaryTops) {
+				break
+			}
 		}
 		sort.Sort(secondaryTops)
 	}
