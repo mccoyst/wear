@@ -141,7 +141,7 @@ func wear(t float64) map[outfit]bool {
 			sort.Sort(tops)
 			var ta outfit
 			copy(ta[:], tops)
-			if !combos[ta] {
+			if !combos[ta] && score == goal {
 				fmt.Fprintln(os.Stderr, tops)
 				combos[ta] = true
 			}
