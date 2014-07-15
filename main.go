@@ -128,7 +128,8 @@ func wear(t float64) map[outfit]bool {
 	for _, top0 := range primaryTops {
 		for {
 			score := top0.score
-			tops := make(clothes, 0, len(secondaryTops)+1)
+			var ta outfit
+			tops := ta[:0:cap(ta)]
 			tops = append(tops, top0)
 			for _, c := range secondaryTops {
 				if c.score+score > goal {
@@ -138,9 +139,7 @@ func wear(t float64) map[outfit]bool {
 				score += c.score
 			}
 
-			sort.Sort(tops)
-			var ta outfit
-			copy(ta[:], tops)
+			sort.Sort(clothes(tops))
 			if !combos[ta] && score == goal {
 				fmt.Fprintln(os.Stderr, tops)
 				combos[ta] = true
