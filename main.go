@@ -7,9 +7,12 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"math"
+	"math/rand"
 	"net/http"
 	"os"
 	"os/user"
+	"sort"
 )
 
 func main() {
@@ -67,59 +70,116 @@ type layer int
 const (
 	Primary   layer = 1 + iota
 	Secondary       = iota << 1
-	Top = iota << 1
+	Top             = iota << 1
 )
 
 type clothing struct {
-	name string
-	layer
+	name  string
+	score int
 }
 
 func (c clothing) String() string {
-	return c.name
+	return fmt.Sprintf("%s(%d)", c.name, c.score)
 }
 
-var (
-	shirt          = clothing{"shirt", Primary|Top}
-	tshirt         = clothing{"t-shirt", Primary | Secondary|Top}
-	longundershirt = clothing{"long undershirt", Secondary|Top}
-	hoodie         = clothing{"hoodie", Secondary|Top}
-	jacket         = clothing{"jacket", Secondary|Top}
-	coat           = clothing{"coat", Secondary|Top}
-	trousers       = clothing{"trousers", Primary}
-	shorts         = clothing{"shorts", Primary}
-	leggings       = clothing{"leggings", Secondary}
-)
+type clothes []clothing
 
-func possibilities(t float64) []clothing {
-	var c []clothing
-	if t < 30 {
-		c = append(c, longundershirt, leggings)
-	}
-	if t < 40 {
-		c = append(c, coat)
-	}
-	if t < 50 {
-		c = append(c, hoodie)
-	}
-	if t < 60 {
-		c = append(c, jacket)
-	}
-	if t < 70 {
-		c = append(c, shirt)
-	}
-	if t >= 70 {
-		c = append(c, tshirt)
-	}
-	if t >= 85 {
-		c = append(c, shorts)
-	} else {
-		c = append(c, trousers)
-	}
-
-	return c
+func (c clothes) Len() int {
+	return len(c)
 }
 
-func clothes(t float64) [][]clothing {
-	return [][]clothing{possibilities(t)}
+func (c clothes) Less(i, j int) bool {
+	return c[i].name < c[j].name
+}
+
+func (c clothes) Swap(i, j int) {
+	c[i], c[j] = c[j], c[i]
+}
+
+func (c clothes) Rand() clothing {
+	return c[rand.Intn(len(c))]
+}
+
+var primaryTops = clothes{
+	clothing{"shirt", 10},
+	clothing{"t-shirt", 5},
+}
+
+var secondaryTops = clothes{
+	clothing{"t-shirt", 5},
+	clothing{"long undershirt", 10},
+	clothing{"hoodie", 5},
+	clothing{"jacket", 5},
+	clothing{"coat", 10},
+}
+
+var primaryBottoms = clothes{
+	clothing{"trousers", 10},
+	clothing{"shorts", 5},
+}
+
+var secondaryBottoms = clothes{
+	clothing{"leggings", 10},
+}
+
+func wear(t float64) [][]clothing {
+	var combos [][]clothing
+
+	tier := int(math.Ceil(t))
+	goal := 35 - tier
+	fmt.Fprintln(os.Stderr, "wearing", int(t), goal)
+
+	sort.Sort(primaryTops)
+	sort.Sort(secondaryTops)
+	sort.Sort(primaryBottoms)
+	sort.Sort(secondaryBottoms)
+
+	//	bot0 := primaryBottoms.Rand()
+	fmt.Fprintln(os.Stderr, "primary tops =", len(primaryTops))
+	for _, top0 := range primaryTops {
+		fmt.Fprintln(os.Stderr, "-------------------------")
+		for {
+			k := len(secondaryTops) - 2
+			for ; k >= 0; k-- {
+				if secondaryTops[k].name < secondaryTops[k+1].name {
+					break
+				}
+			}
+
+			if k < 0 || secondaryTops[k].name >= secondaryTops[k+1].name {
+				break
+			}
+
+			i := len(secondaryTops) - 1
+			for ; i > k; i-- {
+				if secondaryTops[k].name < secondaryTops[i].name {
+					break
+				}
+			}
+
+			if i == k {
+				break
+			}
+
+			secondaryTops.Swap(k, i)
+			sort.Sort(sort.Reverse(secondaryTops[k+1:]))
+
+			score := top0.score
+			tops := make([]clothing, 0, len(secondaryTops)+1)
+			tops = append(tops, top0)
+			for _, c := range secondaryTops {
+				if c.score+score > goal {
+					break
+				}
+				tops = append(tops, c)
+				score += c.score
+			}
+
+			fmt.Fprintln(os.Stderr, tops)
+			combos = append(combos, tops)
+		}
+		sort.Sort(secondaryTops)
+	}
+
+	return combos
 }

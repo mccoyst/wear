@@ -1,23 +1,19 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 )
 
-func ExampleClothes() {
-	cs := clothes(65)
-	for _, c := range cs {
-		fmt.Println(c)
-	}
-	//output: [shirt trousers]
-}
+func TestWear(t *testing.T) {
 
-func TestPossibilities(t *testing.T) {
-	c := possibilities(100)
-	if len(c) != 2 {
-		t.Fatalf("wrong: %v\n", c)
-	}
+	wear(-5)
 
-	
+	wear(0)
+	wear(5)
+	wear(10)
+	wear(15)
+	wear(20)
+	wear(25)
+	wear(30)
+	wear(35)
 }
